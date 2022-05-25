@@ -1,0 +1,40 @@
+os:
+  release: centos
+  version: 7.9.2009
+k8s:
+  version: 1.23.6
+  domain: cluster.myk8s.com
+  networkPlugin: calico
+  installMode: offline
+  clusterIP: 10.1.69.217
+  singleNode: true
+networkPlugin:
+  calico:
+    version: 3.17
+  flannel:
+    version: 0.16.3
+storage:
+  localPath:
+    path: /opt/local-path-provisioner
+  nfs:
+    server: nfs.myk8s.com
+    path: /var/nfsdata
+apps:
+  metrics-server:
+    version: 0.6.1
+    chartVersion: 3.8.2
+  ingress-nginx:
+    version: 1.1.3
+    chartVersion: 4.0.19
+  dashboard:
+    version: 2.5.1
+    chartVersion: 5.5.1
+  harbor:
+    version: 2.4.2
+    chartVersion: 1.8.2
+  kube-prometheus:
+    version: 0.56.2
+    chartVersion: 35.2.0
+tools:
+  helm:
+    version: 3.8.2
