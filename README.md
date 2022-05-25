@@ -63,7 +63,17 @@ node节点:
 
 ### 配置
 
-kubeseeder使用config.yaml作为配置文件，指定了k8s版本、网络插件、存储插件、应用软件、工具软件的相关信息。
+kubeseeder使用config.yaml作为配置文件。
+
+正式使用前，根据config.yaml.template创建config.yaml文件。
+
+~~~
+cp config.yaml.template config.yaml
+~~~
+
+通过config.yaml文件指定了k8s版本、网络插件、存储插件、应用软件、工具软件的相关信息。
+
+以下为config.yaml示例：
 
 ~~~
 os:
