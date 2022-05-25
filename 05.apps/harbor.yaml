@@ -1,0 +1,15 @@
+expose:
+  ingress:
+    hosts:
+      core: core.harbor.myk8s.com
+      notary: notary.harbor.myk8s.com
+
+externalURL: https://core.harbor.myk8s.com
+
+harborAdminPassword: "HarborEbupt1qaz@WSX"
+database:
+  internal:
+    password: "HarborEbupt1qaz@WSX"
+
+metrics:
+  enabled: true

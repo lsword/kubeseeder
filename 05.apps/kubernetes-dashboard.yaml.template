@@ -1,0 +1,34 @@
+image:
+  repository: kubernetesui/dashboard
+  tag: v2.5.1
+
+metricsScraper:
+  enabled: true
+  image:
+    repository: kubernetesui/metrics-scraper
+    tag: v1.0.7
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
+    #ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    #ingress.kubernetes.io/custom-request-headers: "Access-Control-Allow-Origin:*"
+
+  tls:
+    - hosts:
+      - dashboard.K8S_DOMAIN
+  hosts:
+    - dashboard.K8S_DOMAIN
+  paths:
+    - /
+
+tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: "Equal"
+    value: ""
+    effect: "NoSchedule"

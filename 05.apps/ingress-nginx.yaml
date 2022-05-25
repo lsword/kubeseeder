@@ -1,0 +1,37 @@
+controller:
+  image:
+    registry: "docker.io"
+    image: lsword/ingress-nginx-controller
+    tag: "v1.1.3"
+    digest: null
+  hostNetwork: true
+  hostPort:
+    enabled: true
+  kind: DaemonSet
+  ingressClassResource:
+    default: true
+  watchIngressWithoutClass: true
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Equal"
+      value: ""
+      effect: "NoSchedule"
+  nodeSelector:
+    kubernetes.io/os: linux
+    kubernetes.io/hostlabel: ingress-nginx
+  service:
+    enabled: false
+  admissionWebhooks:
+    enabled: false
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "10254"
+    serviceMonitor:
+      enabled: false
+      namespace: "monitoring"
+      jobLabel: "app.kubernetes.io/name"
+      namespaceSelector:
+        any: true
