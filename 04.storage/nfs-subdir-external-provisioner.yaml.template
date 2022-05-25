@@ -1,0 +1,20 @@
+nfs:
+  server: NFS_SERVER
+  path: NFS_PATH
+  mountOptions:
+  - nfsvers=3
+  - vers=3
+  - nolock
+  - timeo=600
+image:
+  repository: lsword/nfs-subdir-external-provisioner
+  tag: v4.0.2
+storageClass:
+  defaultClass: true
+  name: default
+  accessModes: ReadWriteOnce
+tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: "Equal"
+    value: ""
+    effect: "NoSchedule"
