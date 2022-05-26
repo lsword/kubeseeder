@@ -34,7 +34,11 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 if [ $K8S_SINGLE_NODE == 'true' ]; then
   # 去除master的污点
   kubectl taint node $HOSTNAME node-role.kubernetes.io/master-
+  # 加上针对ingress-nginx的标签
+  kubectl label node $HOSTNAME kubernetes.io/hostlabel=ingress-nginx
+
   # 启动nfs
+<<comment
   NFS_SERVER=$(yq '.storage.nfs.server' ../config.yaml)
   NFS_PATH=$(yq '.storage.nfs.path' ../config.yaml)
   NFS_IPRANGE=`echo $K8S_CLUSTER_IP | awk -F. '{print $1 "." $2 ".0.0/16"}'`
@@ -46,8 +50,7 @@ if [ $K8S_SINGLE_NODE == 'true' ]; then
     systemctl restart nfs-kernel-server
   fi
   echo "$K8S_CLUSTER_IP $NFS_SERVER" >> /etc/hosts
-  # 加上针对ingress-nginx的标签
-  kubectl label node $HOSTNAME kubernetes.io/hostlabel=ingress-nginx
+comment
 fi
 
 # 配置定时任务
