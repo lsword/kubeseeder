@@ -1,15 +1,19 @@
 # kubeseeder
 
-## 简介
+[![License](http://img.shields.io/badge/license-apache%20v2-blue.svg)](https://github.com/openpitrix/openpitrix/blob/master/LICENSE)
+
+----
 
 kubeseeder是一个kubernetes安装工具，主要包括以下功能：
 
 - 支持k8s集群安装。
-- 支持单节点k8s。
+- 支持单节点k8s，快速部署用于个人学习和测试的k8s环境。
 - 支持k8s集群的离线部署及升级。
 - 支持离线安装包的制作（目前支持centos7, ubuntu）。
 - 支持主流网络插件（calico, flannel）。
 - 包含集群安装后需要部署的常用软件，包括ingress-nginx、harbor、dashboard等。
+
+----
 
 ## k8s节点配置要求
 
@@ -42,6 +46,8 @@ node节点:
   | 32c  | 128G   | 300G on /var |
 
 ## 网络
+
+支持calico、flannel等主流网络插件。
 
 基于multus插件为pod提供多网卡支持。
 
@@ -117,6 +123,7 @@ tools:
 ~~~
 
 ### 安装前准备
+
 配置好config.yaml后，执行prepare.sh，下载相关文件。在离线模式下，可以生成完整的离线安装包。
 
 ### 制作离线安装包
