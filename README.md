@@ -4,7 +4,7 @@
 
 ----
 
-kubeseeder是一个kubernetes安装工具，主要包括以下功能：
+kubeseeder是一个基于shell脚本实现的kubernetes安装工具，主要包括以下功能：
 
 - 支持k8s集群安装。
 - 支持单节点k8s，快速部署用于个人学习和测试的k8s环境。
