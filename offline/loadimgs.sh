@@ -11,7 +11,7 @@ if [ ! -d $1 ]; then
 fi
 
 cd $1
-iar=(`ls ./*.tar`)
+iar=(`ls ./*.tar.gz`)
 for image in ${iar[@]}
 do
   docker load -i $image

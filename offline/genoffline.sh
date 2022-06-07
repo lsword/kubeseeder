@@ -116,16 +116,20 @@ echo $imagename
 docker pull $image
 docker save -o $imagename.tar $image
 done < imgs
+gzip *.tar
 cd -
 
 #==================================================================================================================
 # Network Plugin
 #------------------------------------------------------------------------------------------------------------------
-CALICO_VERSION=$(yq '.networkPlugin.calico.version' config.yaml)
+<<comment
+CALICO_VERSION=$(yq '.networkPlugin.calico.version' ../config.yaml)
 wget -c https://projectcalico.docs.tigera.io/archive/v$CALICO_VERSION/manifests/calico.yaml -O ../03.network/calico.yaml --no-check-certificate
 
-FLANNEL_VERSION=$(yq '.networkPlugin.flannel.version' config.yaml)
+FLANNEL_VERSION=$(yq '.networkPlugin.flannel.version' ../config.yaml)
 wget -c https://raw.githubusercontent.com/flannel-io/flannel/v$FLANNEL_VERSION/Documentation/kube-flannel.yml -O ../03.network/flannel.yaml --no-check-certificate
+
+comment
 
 #==================================================================================================================
 # Download SYSAPPS images
@@ -163,5 +167,6 @@ echo $imagename
 docker pull $image
 docker save -o $imagename.tar $image
 done < imgs
+gzip *.tar
 cd -
 
