@@ -3,7 +3,7 @@ os:
   version: 7.9.2009
 k8s:
   version: 1.23.6
-  domain: cluster.myk8s.com
+  domain: myk8s.com
   networkPlugin: calico
   installMode: offline
   clusterIP: 10.1.69.217

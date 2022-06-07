@@ -14,4 +14,4 @@ fi
 echo "127.0.0.1 $(hostname)" >> /etc/hosts
 echo "$K8S_CLUSTER_IP $K8S_CLUSTER_DOMAIN" >> /etc/hosts
 
-echo "Exec 'kubeadm token create --print-join-command' on master, and follow the instruction to add this machine as a k8s master."
+echo "Exec 'kubeadm token create --print-join-command' on first master node, and follow the instruction to add this machine as a k8s master."

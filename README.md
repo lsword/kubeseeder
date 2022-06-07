@@ -59,14 +59,6 @@ node节点:
 
 ## 使用说明
 
-### 运行环境
-
-此工具需要在centos7.x环境中以root账号运行。
-
-需要主机能够联网。
-
-需要安装docker。
-
 ### 配置
 
 kubeseeder使用config.yaml作为配置文件。
@@ -122,39 +114,75 @@ tools:
     version: 3.8.2
 ~~~
 
-### 安装前准备
+### 离线安装k8s
 
-配置好config.yaml后，执行prepare.sh，下载相关文件。在离线模式下，可以生成完整的离线安装包。
+使用kubeseeder离线安装k8s，需要按照以下步骤操作。
 
-### 制作离线安装包
+#### 生成离线安装包
 
-如果已有的离线包支持的k8s版本和操作系统版本不满足需求，可以根据需要自制离线安装包。
-配置好config.yaml后，执行genoffline.sh生成离线安装包。
-离线安装包数据保存在offline目录中。
+需要在centos7.x环境中以root账号执行。
+需要主机能够联网。
+需要安装docker。
 
-### 安装k8s集群
+1. 获取kubeseeder
 
-- 初始化节点
+~~~
+git clone https://github.com/lsword/kubeseeder
+~~~
 
-在每个k8s节点上，运行01.base中的init.sh，对k8s节点进行初始化。
+2. 编写配置文件
 
-- 初始化集群
+基于config.yaml.template生成config.yaml配置文件，并根据需要进行修改。
 
-在k8s的第一个master节点上，运行02.cluster中的init.sh，初始化k8s集群。
+~~~
+cd kubeseeder
+cp config.yaml.template config.yaml
+vi config.yaml
+~~~
 
-- 安装网络插件
+3. 制作离线安装包
 
-在k8s的第一个master节点上，运行03.network中的install.sh，安装网络插件。
+配置好config.yaml后，执行prepare.sh，下载相关文件，生成完整的离线安装包。
+
+
+#### 离线安装k8s集群
+
+将kubeseeder目录打包。
+
+~~~
+tar cfvz kubeseeder.tgz kubeseeder
+~~~
+
+将离线安装包kubeseeder.tgz拷贝到各台离线主机并解压。
+
+~~~
+tar xfvz kubeseeder.tgz
+~~~
+
+##### 按照以下顺序安装k8s的第一个master节点。
+
+在用作第一个master节点的主机上做以下操作。
+
+1. 初始化节点
+
+运行01.base中的init.sh，对节点进行初始化。
+
+2. 初始化集群
+
+运行02.cluster中的init.sh，初始化k8s集群。
+
+3. 安装网络插件
+
+运行03.network中的install.sh，安装网络插件。
 目前只支持calico和flannel。
 
-- 安装存储插件
+4. 安装存储插件
 
-在k8s的第一个master节点上，运行04.storage中的install.sh，安装存储插件。
-目前只支持NFS。
+运行04.storage中的install.sh，安装存储插件。
 
-- 安装应用软件
+5. 安装应用软件
 
-在k8s的第一个master节点上，运行05.storage中的install.sh，安装应用软件。
+运行05.storage中的install.sh，安装应用软件。
 
 名称|用途|版本
 ---|---|---
@@ -163,17 +191,35 @@ ingress-nginx|应用代理|1.1.3
 dashboard|k8s控制台|2.5.1
 harbor|镜像服务器|2.4.2
 
-- 添加master
+##### 按照以下顺序添加其他master节点。(根据需要)
 
-在k8s的其余master节点上，执行02.cluster中的addmaster.sh，添加master。
+在用作master节点的主机上做以下操作。
 
-- 添加node
+1. 初始化节点
 
-在k8s的node节点上，执行02.cluster中的addnode.sh，添加node。
+运行01.base中的init.sh，对节点进行初始化。
 
-### 升级k8s集群
+2. 添加master
 
-- 升级第一个master
+执行02.cluster中的addmaster.sh，根据提示，将当前主机添加master。
+
+##### 按照以下顺序添加其他node节点。(根据需要)
+
+在用作node节点的主机上做以下操作。
+
+1. 初始化节点
+
+运行01.base中的init.sh，对节点进行初始化。
+
+2. 添加master
+
+执行02.cluster中的addnode.sh，根据提示，添加node。
+
+#### 离线升级k8s集群
+
+##### 升级第一个master
+
+在第一个master节点上执行以下操作。
 
 进入02.cluster目录，执行以下升级命令：
 
@@ -181,7 +227,9 @@ harbor|镜像服务器|2.4.2
 ./upgrade.sh firstmaster
 ~~~
 
-- 升级其他master
+##### 升级其他master
+
+在master节点上执行以下操作。
 
 进入02.cluster目录，执行以下升级命令：
 
@@ -189,10 +237,15 @@ harbor|镜像服务器|2.4.2
 ./upgrade.sh othermaster
 ~~~
 
-- 升级node
+##### 升级node
+
+在node节点上执行以下操作。
 
 进入02.cluster目录，执行以下升级命令：
 
 ~~~
 ./upgrade.sh node
 ~~~
+
+
+### 在线安装k8s
