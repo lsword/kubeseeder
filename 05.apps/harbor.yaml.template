@@ -6,10 +6,10 @@ expose:
 
 externalURL: https://core.harbor.K8S_DOMAIN
 
-harborAdminPassword: "HarborEbupt1qaz@WSX"
+harborAdminPassword: "Harbor12345"
 database:
   internal:
-    password: "HarborEbupt1qaz@WSX"
+    password: "Harbor12345"
 
 metrics:
   enabled: true
