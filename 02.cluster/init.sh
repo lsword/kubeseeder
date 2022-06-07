@@ -13,7 +13,7 @@ sed "s/K8S_VERSION/$K8S_VERSION/g" kubeadm.yaml.template | sed "s/K8S_CLUSTER_DO
 # check hostname
 HOSTNAME=$(hostname -s)
 if [ $HOSTNAME == "localhost" ]; then
-  echo "Hostname is localhost, Please change hostname by hostname-ctl."
+  echo "Hostname is localhost, Please change hostname by hostnamectl."
   exit 0
 fi
 

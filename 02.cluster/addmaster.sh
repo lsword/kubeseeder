@@ -6,7 +6,7 @@ K8S_CLUSTER_IP=$(yq '.k8s.clusterIP' ../config.yaml)
 # check hostname
 HOSTNAME=$(hostname)
 if [ $HOSTNAME == "localhost" ]; then
-  echo "Hostname is localhost, Please change hostname by hostname-ctl."
+  echo "Hostname is localhost, Please change hostname by hostnamectl."
   exit 1
 fi
 
