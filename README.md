@@ -99,16 +99,69 @@ apps:
     version: 2.4.2
     chartVersion: 1.8.2
     enabled: true
-  kube-prometheus:
-    version: 0.56.2
-    chartVersion: 35.2.0
-    enabled: false
 tools:
   helm:
     version: 3.8.2
   k9s:
     version: 0.25.18
 ~~~
+
+### os
+
+| Name         | Description                      | Value       |
+| ------------ | -------------------------------- | ----------- |
+| `os.release` | Linux发行版名称（centos、ubuntu）| `centos`    |
+| `os.version` | Linux发行版版本                  | `7.9.2009`  |
+
+### k8s
+
+| Name                | Description   | Value          |
+| ------------------- | ------------- | -------------- |
+| `k8s.version`       | k8s版本       | `1.23.6`       |
+| `k8s.domain`        | k8s域名       | `myk8s.com`    |
+| `k8s.networkPlugin` | k8s网络插件   | `calico`       |
+| `k8s.installMode`   | k8s安装模式   | `offline`      |
+| `k8s.clusterIP`     | k8s集群IP地址 | `10.1.69.217`  |
+| `k8s.singleNode`    | k8s单节点模式 | `true`         |
+
+### networkPlugin
+
+| Name                            | Description | Value     |
+| ------------------------------- | ----------- | --------- |
+| `networkPlugin.calico.version`  | calico版本  | `3.17`    |
+| `networkPlugin.flannel.version` | flannel版本 | `0.16.3`  |
+
+### storage
+
+| Name                      | Description                           | Value                          |
+| ------------------------- | ------------------------------------- | ------------------------------ |
+| `storage.localPath.path`  | local-path-provisioner使用的本地路径  | `/opt/local-path-provisioner`  |
+| `storage.nfs.server`      | nfs服务器地址                         | `nfs.myk8s.com`                |
+| `storage.nfs.path`        | nfs服务器路径                         | `/var/nfsdata`                 |
+
+### apps
+
+| Name                                | Description               | Value    |
+| ----------------------------------- | ------------------------- | -------- |
+| `apps.metrics-server.version`       | metrics-server应用版本    | `0.6.1`  |
+| `apps.metrics-server.chartVersion`  | metrics-server的chart版本 | `3.8.2`  |
+| `apps.metrics-server.enabled`       | 是否安装metrics-server    | `true`   |
+| `apps.ingress-nginx.version`        | ingress-nginx应用版本     | `1.1.3`  |
+| `apps.ingress-nginx.chartVersion`   | ingress-nginx的chart版本  | `4.0.19` |
+| `apps.ingress-nginx.enabled`        | 是否安装ingress-nginx     | `true`   |
+| `apps.dashboard.version`            | dashboard应用版本         | `0.6.1`  |
+| `apps.dashboard.chartVersion`       | dashboard的chart版本      | `3.8.2`  |
+| `apps.dashboard.enabled`            | 是否安装dashboard         | `true`   |
+| `apps.harbor.version`               | harbor应用版本            | `2.5.1`  |
+| `apps.harbor.chartVersion`          | harbor的chart版本         | `5.5.1`  |
+| `apps.harbor.enabled`               | 是否安装harbor            | `true`   |
+
+### tools
+
+| Name                 | Description | Value     |
+| -------------------- | ----------- | --------- |
+| `tools.helm.version` | helm版本    | `3.8.2`   |
+| `tools.k9s.version`  | k9s版本     | `0.25.18` |
 
 ## 离线安装k8s
 
