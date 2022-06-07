@@ -211,9 +211,9 @@ harbor|镜像服务器|2.4.2
 
 执行02.cluster中的addnode.sh，根据提示，添加node。
 
-### 离线升级k8s集群
+## 离线升级k8s集群
 
-#### 升级第一个master
+### 升级第一个master
 
 在第一个master节点上执行以下操作。
 
@@ -223,7 +223,7 @@ harbor|镜像服务器|2.4.2
 ./upgrade.sh firstmaster
 ~~~
 
-#### 升级其他master
+### 升级其他master
 
 在master节点上执行以下操作。
 
@@ -233,7 +233,7 @@ harbor|镜像服务器|2.4.2
 ./upgrade.sh othermaster
 ~~~
 
-#### 升级node
+### 升级node
 
 在node节点上执行以下操作。
 
@@ -336,9 +336,9 @@ harbor|镜像服务器|2.4.2
 
 执行02.cluster中的addnode.sh，根据提示，添加node。
 
-### 在线升级k8s集群
+## 在线升级k8s集群
 
-#### 升级第一个master
+### 升级第一个master
 
 在第一个master节点上执行以下操作。
 
@@ -348,7 +348,7 @@ harbor|镜像服务器|2.4.2
 ./upgrade.sh firstmaster
 ~~~
 
-#### 升级其他master
+### 升级其他master
 
 在master节点上执行以下操作。
 
@@ -358,7 +358,7 @@ harbor|镜像服务器|2.4.2
 ./upgrade.sh othermaster
 ~~~
 
-#### 升级node
+### 升级node
 
 在node节点上执行以下操作。
 
