@@ -163,7 +163,7 @@ APPS_IMAGEDIR="../offline/apps/images"
 
 HARBOR_ENABLED=$(yq '.apps.harbor.enabled' ../config.yaml)
 HARBOR_VERSION=$(yq '.apps.harbor.version' ../config.yaml)
-if [ $HARBOR_ENABLED== "true" ]; then
+if [ $HARBOR_ENABLED == "true" ]; then
   APPS_DIR="../offline/apps"
   tar xfvz $APPS_DIR/harbor-offline-installer-v$HARBOR_VERSION.tgz -C /tmp
   docker load -i /tmp/harbor/harbor.v$HARBOR_VERSION.tar.gz
