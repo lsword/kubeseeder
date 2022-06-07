@@ -9,7 +9,7 @@ if [ $METRIC_SERVER_ENABLED == "true" ]; then
   helm install metrics-server metrics-server -f metrics-server.yaml -n kube-system
 fi
 
-DASHBOARD_ENABLED=$(yq '.apps.dashboard.enabled' config.yaml)
+DASHBOARD_ENABLED=$(yq '.apps.dashboard.enabled' ../config.yaml)
 if [ $DASHBOARD_ENABLED == "true" ]; then
   helm install kubernetes-dashboard kubernetes-dashboard -f kubernetes-dashboard.yaml -n kube-system
   kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
