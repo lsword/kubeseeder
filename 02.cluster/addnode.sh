@@ -1,7 +1,7 @@
 #!/bin/bash
 
-K8S_CLUSTER_DOMAIN=$(yq '.k8s.domain' ../config.yaml)
-K8S_CLUSTER_IP=cluster.$(yq '.k8s.clusterIP' ../config.yaml)
+K8S_CLUSTER_DOMAIN=cluster.$(yq '.k8s.domain' ../config.yaml)
+K8S_CLUSTER_IP=$(yq '.k8s.clusterIP' ../config.yaml)
 
 # check hostname
 HOSTNAME=$(hostname)
