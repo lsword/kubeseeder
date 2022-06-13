@@ -95,14 +95,22 @@ fi
 #------------------------------------------------------------------------------------------------------------------
 IMAGES_DIR=$K8S_VERSION-$OS_RELEASE$OS_VERSION/images
 mkdir -p $IMAGES_DIR
-yum remove -y kubeadm kubelet kubectl
-yum install -y kubeadm-$K8S_VERSION-0
-  # need add check for kubeadm
-kubeadm config images list --kubernetes-version v$K8S_VERSION | grep k8s.gcr.io | sed 's/k8s.gcr.io/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' > $IMAGES_DIR/imgs
+cd $K8S_VERSION-$OS_RELEASE$OS_VERSION/
+tar xfvz kubernetes-node-linux-amd64.tar.gz
+./kubernetes/node/bin/kubeadm config images list --kubernetes-version v$K8S_VERSION | grep k8s.gcr.io | sed 's/k8s.gcr.io/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' > images/imgs
 if [ $? -ne 0 ]; then
   echo "Get k8s image list error."
   exit 1
 fi
+rm -rf ./kubernetes
+cd -
+
+<<comment
+yum remove -y kubeadm kubelet kubectl
+yum install -y kubeadm-$K8S_VERSION-0
+  # need add check for kubeadm
+kubeadm config images list --kubernetes-version v$K8S_VERSION | grep k8s.gcr.io | sed 's/k8s.gcr.io/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' > $IMAGES_DIR/imgs
+comment
 
 sed -i 's/\/coredns\//\//' $IMAGES_DIR/imgs
 
