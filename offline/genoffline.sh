@@ -134,39 +134,114 @@ comment
 #==================================================================================================================
 # Download SYSAPPS images
 #------------------------------------------------------------------------------------------------------------------
-SYSAPPS_DIR=sysapps
 
-mkdir -p $SYSAPPS_DIR
+INCLUDE_SYS_APPS=$(yq '.offline.includeSysApps' ../config.yaml)
+if [ $INCLUDE_SYS_APPS == "true" ]; then
+  SYSAPPS_DIR=sysapps
+  mkdir -p $SYSAPPS_DIR
+  rm -rf $SYSAPPS_DIR/imgs
 
-rm -rf $SYSAPPS_DIR/imgs
+  # calico
+  grep "image:" ../03.network/calico.yaml | awk '{print $2}' >> $SYSAPPS_DIR/imgs
 
-# calico
-grep "image:" ../03.network/calico.yaml | awk '{print $2}' >> $SYSAPPS_DIR/imgs
+  # flannel
+  grep "image:" ../03.network/flannel.yaml | grep -v "#image" | awk '{print $2}' >> $SYSAPPS_DIR/imgs
 
-# flannel
-grep "image:" ../03.network/flannel.yaml | grep -v "#image" | awk '{print $2}' >> $SYSAPPS_DIR/imgs
+  # multus
+  echo "ghcr.io/k8snetworkplumbingwg/multus-cni:thick" >> $SYSAPPS_DIR/imgs
 
-# multus
-echo "ghcr.io/k8snetworkplumbingwg/multus-cni:thick" >> $SYSAPPS_DIR/imgs
+  # nfs provisioner
+  echo "docker.io/lsword/nfs-subdir-external-provisioner:v4.0.2" >> $SYSAPPS_DIR/imgs
 
-# nfs provisioner
-echo "docker.io/lsword/nfs-subdir-external-provisioner:v4.0.2" >> $SYSAPPS_DIR/imgs
+  # local path provisioner
+  echo "docker.io/rancher/local-path-provisioner:v0.0.22" >> $SYSAPPS_DIR/imgs
+  echo "docker.io/busybox:latest" >> $SYSAPPS_DIR/imgs
 
-# local path provisioner
-echo "docker.io/rancher/local-path-provisioner:v0.0.22" >> $SYSAPPS_DIR/imgs
-echo "docker.io/busybox:latest" >> $SYSAPPS_DIR/imgs
+  # save images
+  cd $SYSAPPS_DIR
+  rm -rf $SYSAPPS_DIR/*.gz $SYSAPPS_DIR/*.tar
+  while read image
+  do
+    iar=(`echo $image | tr '/' ' '`)
+    echo $image
+    imagename=${iar[${#iar[@]}-1]}
+    echo $imagename
+    docker pull $image
+    docker save -o $imagename.tar $image
+    done < imgs
+  gzip *.tar
+  cd -
 
-# save images
-cd $SYSAPPS_DIR
-while read image
-do
-iar=(`echo $image | tr '/' ' '`)
-echo $image
-imagename=${iar[${#iar[@]}-1]}
-echo $imagename
-docker pull $image
-docker save -o $imagename.tar $image
-done < imgs
-gzip *.tar
-cd -
+fi
 
+#==================================================================================================================
+# Download app images
+#------------------------------------------------------------------------------------------------------------------
+
+INCLUDE_APPS=$(yq '.offline.includeApps' ../config.yaml)
+if [ $INCLUDE_APPS == "true" ]; then
+  APPS_DIR=apps
+  mkdir -p $APPS_DIR
+  rm -rf $APPS_DIR/imgs
+
+  # metric-server
+  METRIC_SERVER_ENABLED=$(yq '.apps.metrics-server.enabled' ../config.yaml)
+  METRIC_SERVER_VERSION=$(yq '.apps.metrics-server.version' ../config.yaml)
+  if [ $METRIC_SERVER_ENABLED == "true" ]; then
+    echo "docker.io/bitnami/metrics-server:$METRIC_SERVER_VERSION" > $APPS_DIR/imgs
+  fi
+
+  # ingress-nginx
+  INGRESS_NGINX_ENABLED=$(yq '.apps.ingress-nginx.enabled' ../config.yaml)
+  INGRESS_NGINX_VERSION=$(yq '.apps.ingress-nginx.version' ../config.yaml)
+  if [ $INGRESS_NGINX_ENABLED == "true" ]; then
+    echo "docker.io/lsword/ingress-nginx-controller:v$INGRESS_NGINX_VERSION" >> $APPS_DIR/imgs
+  fi
+
+  # dashboard
+  DASHBOARD_ENABLED=$(yq '.apps.dashboard.enabled' ../config.yaml)
+  DASHBOARD_VERSION=$(yq '.apps.dashboard.version' ../config.yaml)
+  if [ $DASHBOARD_ENABLED == "true" ]; then
+    echo "docker.io/kubernetesui/dashboard:v$DASHBOARD_VERSION" >> $APPS_DIR/imgs
+    echo "docker.io/kubernetesui/metrics-scraper:v1.0.7" >> $APPS_DIR/imgs
+  fi
+
+  # harbor
+  HARBOR_ENABLED=$(yq '.apps.harbor.enabled' ../config.yaml)
+  HARBOR_VERSION=$(yq '.apps.harbor.version' ../config.yaml)
+  if [ $HARBOR_ENABLED == "true" ]; then
+    wget -c https://github.com/goharbor/harbor/releases/download/v$HARBOR_VERSION/harbor-offline-installer-v$HARBOR_VERSION.tgz -O $APPS_DIR/harbor-offline-installer-v$HARBOR_VERSION.tgz
+  fi
+
+  # kube-prometheus
+  KUBE_PROMETHEUS_ENABLED=$(yq '.apps.kube-prometheus.enabled' ../config.yaml)
+  if [ $KUBE_PROMETHEUS_ENABLED == "true" ]; then
+    echo "to be add"
+  fi
+
+  # common
+  echo "docker.io/library/registry:latest" >> $APPS_DIR/imgs
+  echo "docker.io/library/centos:7" >> $APPS_DIR/imgs
+  echo "docker.io/library/busybox:stable" >> $APPS_DIR/imgs
+  echo "docker.io/library/busybox:stable-glibc" >> $APPS_DIR/imgs
+  echo "docker.io/library/alpine:latest" >> $APPS_DIR/imgs
+  echo "docker.io/library/nginx:alpine" >> $APPS_DIR/imgs
+  echo "docker.io/nicolaka/netshoot:latest" >> $APPS_DIR/imgs
+
+  # save images to files
+  rm -rf $APPS_DIR/images
+  mkdir -p $APPS_DIR/images
+  cd $APPS_DIR
+  while read image
+  do
+    iar=(`echo $image | tr '/' ' '`)
+    echo $image
+    imagename=${iar[${#iar[@]}-1]}
+    echo $imagename
+    docker pull $image
+    docker save -o images/$imagename.tar $image
+  done < imgs
+  gzip images/*.tar
+  cd -
+
+fi

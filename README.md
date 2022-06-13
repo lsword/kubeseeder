@@ -208,6 +208,10 @@ tar cfvz kubeseeder.tgz kubeseeder
 tar xfvz kubeseeder.tgz
 ~~~
 
+#### 根据所在主机情况修改config.yaml。
+
+单机模式下，将k8s.clusterIP设置为主机IP地址。
+
 #### 按照以下顺序安装k8s的第一个master节点。
 
 在用作第一个master节点的主机上做以下操作。
