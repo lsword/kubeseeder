@@ -60,6 +60,10 @@ if [ $K8S_NODE == "firstmaster" ]; then
   #ubeadm upgrade plan
   kubeadm upgrade apply v$K8S_VERSION -y
   kubectl uncordon `hostname`
+  rm -rf $HOME/.kube
+  mkdir -p $HOME/.kube
+  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  chown $(id -u):$(id -g) $HOME/.kube/config
 elif [ $K8S_NODE == "othermaster" ]; then
   kubectl drain `hostname` --force --ignore-daemonsets --delete-emptydir-data
   kubeadm upgrade node -y
