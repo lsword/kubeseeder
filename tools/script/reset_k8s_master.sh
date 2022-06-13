@@ -5,6 +5,7 @@ systemctl stop kubelet
 systemctl stop docker
 rm -rf /etc/kubernetes/*
 rm -rf /var/lib/kubelet/*
+rm -rf /var/lib/etcd
 rm -rf $HOME/.kube
 rm -rf /var/lib/cni/
 rm -rf /etc/cni/
