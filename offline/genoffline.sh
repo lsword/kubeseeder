@@ -224,7 +224,16 @@ if [ $INCLUDE_APPS == "true" ]; then
   # kube-prometheus
   KUBE_PROMETHEUS_ENABLED=$(yq '.apps.kube-prometheus.enabled' ../config.yaml)
   if [ $KUBE_PROMETHEUS_ENABLED == "true" ]; then
-    echo "to be add"
+    echo "quay.io/prometheus/alertmanager:v0.24.0" >> $APPS_DIR/imgs
+    #echo "k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1" >> $APPS_DIR/imgs
+    echo "docker.io/liangjw/kube-webhook-certgen:v1.1.1" >> $APPS_DIR/imgs
+    echo "quay.io/prometheus-operator/prometheus-operator:v0.56.3" >> $APPS_DIR/imgs
+    echo "quay.io/prometheus-operator/prometheus-config-reloader:v0.56.3" >> $APPS_DIR/imgs
+    echo "quay.io/thanos/thanos:v0.25.2" >> $APPS_DIR/imgs
+    echo "quay.io/prometheus/prometheus:v2.35.0" >> $APPS_DIR/imgs
+    echo "quay.io/prometheus/node-exporter:v1.3.1" >> $APPS_DIR/imgs
+    echo "docker.io/grafana/grafana:8.5.5" >> $APPS_DIR/imgs
+    echo "quay.io/kiwigrid/k8s-sidecar:1.15.6" >> $APPS_DIR/imgs
   fi
 
   # common

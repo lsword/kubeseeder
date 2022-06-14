@@ -39,6 +39,10 @@ apps:
     version: 2.4.2
     chartVersion: 1.8.2
     enabled: true
+  kube-prometheus:
+    version: 0.56.2
+    chartVersion: 35.6.2
+    enabled: true
 tools:
   helm:
     version: 3.8.2

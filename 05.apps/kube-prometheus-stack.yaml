@@ -1,0 +1,46 @@
+grafana:
+  enabled: true
+  image:
+    repository: grafana/grafana
+    tag: 8.5.5
+  testFramework:
+    enabled: false
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.myk8s.com
+  defaultDashboardsTimezone: Asia/Shanghai
+  adminPassword: prom-operator
+
+kubeStateMetrics:
+  enabled: false
+
+alertmanager:
+  alertmanagerSpec:
+    image:
+      repository: quay.io/prometheus/alertmanager
+      tag: v0.24.0
+
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+    patch:
+      image:
+        repository: liangjw/kube-webhook-certgen
+        tag: v1.1.1
+  image:
+    repository: quay.io/prometheus-operator/prometheus-operator
+    tag: v0.56.3
+  prometheusConfigReloader:
+    image:
+      repository: quay.io/prometheus-operator/prometheus-config-reloader
+      tag: v0.56.3
+  thanosImage:
+    repository: quay.io/thanos/thanos
+    tag: v0.25.2
+
+prometheus:
+  prometheusSpec:
+    image:
+      repository: quay.io/prometheus/prometheus
+      tag: v2.35.0

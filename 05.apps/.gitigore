@@ -1,2 +1,3 @@
 kubernetes-dashboard.yaml
+kube-prometheus-stack.yaml
 harbor.yaml

@@ -3,6 +3,7 @@
 K8S_DOMAIN=$(yq '.k8s.domain' ../config.yaml)
 sed "s/K8S_DOMAIN/$K8S_DOMAIN/g" kubernetes-dashboard.yaml.template > kubernetes-dashboard.yaml
 sed "s/K8S_DOMAIN/$K8S_DOMAIN/g" harbor.yaml.template > harbor.yaml
+sed "s/K8S_DOMAIN/$K8S_DOMAIN/g" kube-prometheus-stack.yaml.template > kube-prometheus-stack.yaml
 
 METRIC_SERVER_ENABLED=$(yq '.apps.metrics-server.enabled' ../config.yaml)
 if [ $METRIC_SERVER_ENABLED == "true" ]; then
@@ -27,11 +28,18 @@ if [ $HARBOR_ENABLED == "true" ]; then
   helm install harbor harbor-helm -f harbor.yaml -n harbor
 fi
 
+KUBE_PROMETHEUS_ENABLED=$(yq '.apps.kube-prometheus.enabled' ../config.yaml)
+if [ $KUBE_PROMETHEUS_ENABLED == "true" ]; then
+  kubectl create namespace monitoring 
+  helm install kube-prometheus-stack kube-prometheus-stack -f kube-prometheus-stack.yaml -n monitoring
+fi
+
 # after install
 IPADDR=$(yq '.k8s.clusterIP' ../config.yaml)
 
 URL_DASHBOARD=$(yq '.ingress.hosts[0]' ./kubernetes-dashboard.yaml)
 URL_HARBOR=$(yq '.expose.ingress.hosts.core' ./harbor.yaml)
+URL_GRAFANA=$(yq '.grafana.ingress.hosts[0]' ./kube-prometheus-stack.yaml)
 
 echo "Add below resolv info to /etc/hosts: "
-echo $IPADDR $URL_DASHBOARD $URL_HARBOR
+echo $IPADDR $URL_DASHBOARD $URL_HARBOR $URL_GRAFANA
