@@ -110,7 +110,7 @@ alias ksgss='ksg sts'
 alias ksgj='ksg job'
 alias ksgcj='ksg cronjob'
 
-alias ksd='kks describe'
+alias ksd='ks describe'
 alias ksdd='ksd deploy'
 alias ksdp='ksd pods'
 alias ksds='ksd svc'
@@ -128,3 +128,5 @@ alias ksrmp='ks delete --force --grace-period=0 po'
 
 alias kr='k run --restart=Never --dry-run=client -o yaml'
 EOF
+
+source ~/.bashrc
