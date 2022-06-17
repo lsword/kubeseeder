@@ -18,7 +18,7 @@ if [ $HOSTNAME == "localhost" ]; then
 fi
 
 # set /etc/hosts
-echo "127.0.0.1 $(hostname)" >> /etc/hosts
+echo "$(hostname -I | awk '{print $1}') $(hostname)" >> /etc/hosts
 echo "$K8S_CLUSTER_IP $K8S_CLUSTER_DOMAIN" >> /etc/hosts
 
 # 在master节点上启动集群
