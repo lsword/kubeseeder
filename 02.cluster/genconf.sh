@@ -19,8 +19,9 @@ yq '.kubernetesVersion = env(K8S_VERSION) |
     .imageRepository = "registry.cn-hangzhou.aliyuncs.com/google_containers" |
     .certificatesDir = "/etc/kubernetes/pki" |
     .controlPlaneEndpoint = env(K8S_CONTROLPLANE_ENDPOINT) |
+    .apiServer.extraArgs.authorization-mode = "Node,RBAC" | .apiServer.extraArgs.authorization-mode style="double" |
     .apiServer.extraArgs.service-node-port-range = "30000-65530" |
-    .apiServer.enable-admission-plugins = "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Priority" |
+    .apiServer.extraArgs.enable-admission-plugins = "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Priority" |
     .apiServer.certSANs[0] = env(K8S_CLUSTER_DOMAIN) |
     .apiServer.certSANs[1] = "10.96.0.1" |
     .apiServer.certSANs[2] = "127.0.0.1" |
@@ -50,7 +51,8 @@ yq '.kubernetesVersion = env(K8S_VERSION) |
 
 ' ClusterConfiguration.yml > ClusterConfiguration.yaml
 
-yq '.localAPIEndpoint.advertiseAddress = "0.0.0.0"
+yq '.localAPIEndpoint.advertiseAddress = "0.0.0.0" |
+    del(.nodeRegistration.name)
 ' InitConfiguration.yml > InitConfiguration.yaml
 
 # REF: https://pkg.go.dev/k8s.io/kubelet@v0.25.0/config/v1beta1#KubeletConfiguration
@@ -69,14 +71,14 @@ yq e -n \
     .staticPodPath = "/etc/kubernetes/manifests" |
     .authentication.anonymous.enabled = false |
     .authentication.webhook.cacheTTL = "0s" |
-    .authentication.webhook.enabled = false |
+    .authentication.webhook.enabled = true |
     .authentication.x509.clientCAFile = "/etc/kubernetes/pki/ca.crt" |
-    .evictionHard.memory.available = "500Mi" |
-    .evictionHard.nodefs.available = "10%" |
-    .kubeReserved.cpu = "200m" |
-    .kubeReserved.memory = "500Mi" |
-    .systemReserved.cpu = "200m" |
-    .systemReserved.memory = "500Mi"
+    .evictionHard."memory.available" = "500Mi" | .evictionHard."memory.available" style="double" |
+    .evictionHard."nodefs.available" = "10%" | .evictionHard."nodefs.available" style="double" |
+    .kubeReserved.cpu = "200m" | .kubeReserved.cpu style="double" |
+    .kubeReserved.memory = "500Mi" | .kubeReserved.memory style="double" |
+    .systemReserved.cpu = "200m" | .systemReserved.cpu style="double" |
+    .systemReserved.memory = "500Mi" | .systemReserved.memory style="double"
 ' > KubeletConfiguration.yaml
 
 # REF: https://pkg.go.dev/k8s.io/kube-proxy/config/v1alpha1#KubeProxyConfiguration
