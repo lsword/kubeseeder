@@ -15,7 +15,7 @@ K8S_SINGLE_NODE=$(yq '.k8s.singleNode' ../config.yaml)
 HOSTNAME=$(hostname -s)
 if [ $HOSTNAME == "localhost" ]; then
   echo "Hostname is localhost, Please change hostname by hostnamectl."
-  exit 0
+  exit 1
 fi
 
 # set /etc/hosts
@@ -23,7 +23,11 @@ echo "$(hostname -I | awk '{print $1}') $(hostname)" >> /etc/hosts
 echo "$K8S_CLUSTER_IP $K8S_CLUSTER_DOMAIN" >> /etc/hosts
 
 # 在master节点上启动集群
-kubeadm init --config ./kubeadm.yaml | tee ./kube_init.log
+kubeadm init --config ./kubeadm.yaml
+if [ $? -ne 0 ]; then
+  echo "kubeadm error"
+  exit 1
+fi
 
 rm -rf $HOME/.kube
 mkdir -p $HOME/.kube
