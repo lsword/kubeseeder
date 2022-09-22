@@ -9,8 +9,8 @@ kubeadm config print init-defaults | yq -s '.kind'
 
 # REF: https://pkg.go.dev/k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta3
 
-export K8S_VERSION=1.24.1
-export K8S_CLUSTER_DOMAIN=myk8s.ebupt.com
+export K8S_VERSION=$(yq '.k8s.version' ../config.yaml)
+export K8S_CLUSTER_DOMAIN=cluster.$(yq '.k8s.domain' ../config.yaml)
 export K8S_CLUSTER_PORT=6443
 export K8S_CONTROLPLANE_ENDPOINT=$K8S_CLUSTER_DOMAIN:$K8S_CLUSTER_PORT
 
