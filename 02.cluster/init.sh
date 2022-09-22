@@ -8,7 +8,8 @@ K8S_CLUSTER_IP=$(yq '.k8s.clusterIP' ../config.yaml)
 K8S_SINGLE_NODE=$(yq '.k8s.singleNode' ../config.yaml)
 
 # generate kubeadm.yaml
-sed "s/K8S_VERSION/$K8S_VERSION/g" kubeadm.yaml.template | sed "s/K8S_CLUSTER_DOMAIN/$K8S_CLUSTER_DOMAIN/g" > kubeadm.yaml
+#sed "s/K8S_VERSION/$K8S_VERSION/g" kubeadm.yaml.template | sed "s/K8S_CLUSTER_DOMAIN/$K8S_CLUSTER_DOMAIN/g" > kubeadm.yaml
+./genconf.sh
 
 # check hostname
 HOSTNAME=$(hostname -s)
@@ -22,7 +23,6 @@ echo "$(hostname -I | awk '{print $1}') $(hostname)" >> /etc/hosts
 echo "$K8S_CLUSTER_IP $K8S_CLUSTER_DOMAIN" >> /etc/hosts
 
 # 在master节点上启动集群
-#kubeadm init --config ./kubeadmin_init.yaml | tee ./kube_init.log
 kubeadm init --config ./kubeadm.yaml | tee ./kube_init.log
 
 rm -rf $HOME/.kube
