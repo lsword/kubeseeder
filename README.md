@@ -46,6 +46,10 @@ node节点:
   | ---- | ------ | ------------ |
   | 32c  | 128G   | 300G on /var |
 
+## k8s版本支持
+
+支持1.16及以上版本(不支持apiextensions.k8s.io/v1beta1)。
+
 ## 配置
 
 kubeseeder使用config.yaml作为配置文件。
