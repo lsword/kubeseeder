@@ -31,6 +31,30 @@ echo "$K8S_CLUSTER_IP $K8S_CLUSTER_DOMAIN" >> /etc/hosts
 ./genconf.sh
 
 #==================================================================================================================
+# Init containerd
+#------------------------------------------------------------------------------------------------------------------
+criSocket=$(grep criSocket kubeadm.yaml | awk '{print $2}')
+if [ $criSocket == "unix:///var/run/containerd/containerd.sock" ]; then
+  mkdir -p /etc/containerd/certs.d
+cat <<EOF > /etc/containerd/config.toml
+version = 2
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+    sandbox_image = "registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.7"
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      snapshotter = "overlayfs"
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true
+EOF
+  systemctl restart containerd
+fi
+
+#==================================================================================================================
 # Init kubernetes master
 #------------------------------------------------------------------------------------------------------------------
 kubeadm init --config ./kubeadm.yaml
