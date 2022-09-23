@@ -1,28 +1,38 @@
 #!/bin/bash
 
-# load config
+#==================================================================================================================
+# Load config
+#------------------------------------------------------------------------------------------------------------------
 OS_RELEASE=$(yq '.os.release' ../config.yaml)
 K8S_VERSION=$(yq '.k8s.version' ../config.yaml)
 K8S_CLUSTER_DOMAIN=cluster.$(yq '.k8s.domain' ../config.yaml)
 K8S_CLUSTER_IP=$(yq '.k8s.clusterIP' ../config.yaml)
 K8S_SINGLE_NODE=$(yq '.k8s.singleNode' ../config.yaml)
 
-# generate kubeadm.yaml
-#sed "s/K8S_VERSION/$K8S_VERSION/g" kubeadm.yaml.template | sed "s/K8S_CLUSTER_DOMAIN/$K8S_CLUSTER_DOMAIN/g" > kubeadm.yaml
-./genconf.sh
-
-# check hostname
+#==================================================================================================================
+# Check hostname
+#------------------------------------------------------------------------------------------------------------------
 HOSTNAME=$(hostname -s)
 if [ $HOSTNAME == "localhost" ]; then
   echo "Hostname is localhost, Please change hostname by hostnamectl."
   exit 1
 fi
 
-# set /etc/hosts
+#==================================================================================================================
+# Set /etc/hosts
+#------------------------------------------------------------------------------------------------------------------
 echo "$(hostname -I | awk '{print $1}') $(hostname)" >> /etc/hosts
 echo "$K8S_CLUSTER_IP $K8S_CLUSTER_DOMAIN" >> /etc/hosts
 
-# 在master节点上启动集群
+#==================================================================================================================
+# Generate kubeadm.yaml
+#------------------------------------------------------------------------------------------------------------------
+#sed "s/K8S_VERSION/$K8S_VERSION/g" kubeadm.yaml.template | sed "s/K8S_CLUSTER_DOMAIN/$K8S_CLUSTER_DOMAIN/g" > kubeadm.yaml
+./genconf.sh
+
+#==================================================================================================================
+# Init kubernetes master
+#------------------------------------------------------------------------------------------------------------------
 kubeadm init --config ./kubeadm.yaml
 if [ $? -ne 0 ]; then
   echo "kubeadm error"
@@ -34,7 +44,9 @@ mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
-# 处理单节点模式
+#==================================================================================================================
+# Single node mode
+#------------------------------------------------------------------------------------------------------------------
 if [ $K8S_SINGLE_NODE == 'true' ]; then
   # 去除master的污点
   kubectl taint node $HOSTNAME node-role.kubernetes.io/master-
@@ -57,7 +69,9 @@ if [ $K8S_SINGLE_NODE == 'true' ]; then
 comment
 fi
 
-# 配置定时任务
+#==================================================================================================================
+# Config cron job
+#------------------------------------------------------------------------------------------------------------------
 cp ../tools/script/clean_k8spod.sh /usr/local/bin
 cp ../tools/script/clean_docker.sh /usr/local/bin
 
@@ -66,7 +80,9 @@ cat <<EOF > /var/spool/cron/root
 0 0 1 * * /usr/local/bin/clean_k8spod.sh
 EOF
 
-# 配置alias
+#==================================================================================================================
+# Config alias
+#------------------------------------------------------------------------------------------------------------------
 cat <<EOF >> ~/.bashrc
 
 alias k=kubectl
