@@ -62,8 +62,6 @@ yq e -n \
     .kind = "KubeletConfiguration" |
     .cgroupDriver = "systemd" |
     .streamingConnectionIdleTimeout = "0s" |
-    .shutdownGracePeriod = "0s" |
-    .shutdownGracePeriodCriticalPods = "0s" |
     .syncFrequency = "30s" |
     .volumeStatsAggPeriod = "30s" |
     .runtimeRequestTimeout = "60s" |
