@@ -49,6 +49,16 @@ mv k9s/k9s bin
 rm -rf k9s.tgz k9s
 cd ..
 
+# nerdctl
+NERDCTL_VERSION=$(yq '.tools.nerdctl.version' config.yaml)
+wget -c https://github.com/containerd/nerdctl/releases/download/v$NERDCTL_VERSION/nerdctl-$NERDCTL_VERSION-linux-amd64.tar.gz -O ./tools/nerdctl.tgz --no-check-certificate
+cd ./tools
+mkdir nerdctl
+tar xfvz nerdctl.tgz -C nerdctl
+mv nerdctl/nerdctl bin
+rm -rf nerdctl.tgz nerdctl
+cd ..
+
 if [ $K8S_INSTALLMODE == "online" ];then
   exit 0
 fi
