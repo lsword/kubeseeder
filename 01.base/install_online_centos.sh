@@ -82,7 +82,8 @@ EOF
 
 yum makecache
 
-yum install -y kubeadm-$K8S_VERSION-0 kubelet-$K8S_VERSION-0 kubectl-$K8S_VERSION-0 --disableexcludes=kubernetes
+yum install -y kubelet-$K8S_VERSION-0 --disableexcludes=kubernetes
+yum install -y kubeadm-$K8S_VERSION-0 kubectl-$K8S_VERSION-0 --disableexcludes=kubernetes
 systemctl enable kubelet
 systemctl restart kubelet
 
