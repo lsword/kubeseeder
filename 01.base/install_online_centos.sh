@@ -45,6 +45,7 @@ cat <<EOF > /etc/docker/daemon.json
   "storage-opts": [
     "overlay2.override_kernel_check=true"
   ],
+  "registry-mirrors": ["https://hub-mirror.c.163.com", "https://reg-mirror.qiniu.com"],
   "insecure-registries" : ["core.harbor.$K8S_DOMAIN"]
 }
 EOF
