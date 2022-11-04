@@ -6,12 +6,6 @@
 K8S_DOMAIN=$(yq '.k8s.domain' ../config.yaml)
 K8S_VERSION=$(yq '.k8s.version' ../config.yaml)
 
-yum list kubeadm --showduplicates | grep $K8S_VERSION
-if [ $? -ne 0 ]; then
-  echo "Cann't install kubernetes(version:$K8S_VERSION), please check your config."
-  exit 1
-fi
-
 #==================================================================================================================
 # Install base yum software
 #------------------------------------------------------------------------------------------------------------------
@@ -81,6 +75,12 @@ gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors
 EOF
 
 yum makecache
+
+yum list kubeadm --showduplicates | grep $K8S_VERSION
+if [ $? -ne 0 ]; then
+  echo "Cann't install kubernetes(version:$K8S_VERSION), please check your config."
+  exit 1
+fi
 
 yum install -y kubelet-$K8S_VERSION-0 --disableexcludes=kubernetes
 yum install -y kubeadm-$K8S_VERSION-0 kubectl-$K8S_VERSION-0 --disableexcludes=kubernetes
